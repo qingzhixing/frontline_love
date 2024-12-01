@@ -12,7 +12,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: '我要打纷争前线!',
       theme: uiTheme,
       debugShowCheckedModeBanner: false,
       home: const MyHomePage(),
