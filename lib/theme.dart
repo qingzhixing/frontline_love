@@ -5,8 +5,13 @@ var uiTheme = ThemeData(
     headlineMedium: TextStyle(
       fontFamily: "QingKeHuangYou-Regular",
       fontSize: 16,
-      height: 1.5,
       wordSpacing: 4,
+    ),
+    headlineLarge: TextStyle(
+      fontFamily: "QingKeHuangYou-Regular",
+      fontSize: 25,
+      wordSpacing: 4,
+      fontWeight: FontWeight.bold,
     ),
   ),
   colorScheme: ColorScheme.fromSeed(seedColor: Colors.blueAccent),
