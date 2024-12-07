@@ -1,6 +1,7 @@
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:frontline_love/theme.dart';
+import 'dart:developer' as developer;
 
 void main() {
   runApp(const MyApp());
@@ -30,10 +31,14 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
-    playSound() async {
+    playSound(int soundEffectIndex) async {
+      if (soundEffectIndex < 1 || soundEffectIndex > 16) {
+        developer.log("Invalid sound effect index$soundEffectIndex");
+        return;
+      }
       var tempPlayer = AudioPlayer();
       await tempPlayer.play(AssetSource(
-        "audio/se1.mp3",
+        "audio/se$soundEffectIndex.mp3",
       ));
     }
 
@@ -60,9 +65,39 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         ),
       ),
-      body: const Center(),
+      body: Center(
+        child: FractionallySizedBox(
+          widthFactor: 0.9,
+          heightFactor: 0.95,
+          alignment: Alignment.center,
+          child: GridView.builder(
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 4,
+              crossAxisSpacing: 20,
+              mainAxisSpacing: 20,
+            ),
+            itemCount: 16,
+            itemBuilder: (context, index) {
+              return TextButton(
+                onPressed: () => playSound(index + 1),
+                style: ButtonStyle(
+                  shape: WidgetStateProperty.all(
+                    RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                  backgroundColor: WidgetStateProperty.all(
+                    Theme.of(context).cardTheme.color,
+                  ),
+                ),
+                child: Text("se.${index + 1}"),
+              );
+            },
+          ),
+        ),
+      ),
       floatingActionButton: FloatingActionButton(
-        onPressed: playSound,
+        onPressed: () => playSound(1),
         tooltip: 'Play Sound',
         child: const Icon(Icons.audiotrack_outlined),
       ),
