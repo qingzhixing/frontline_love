@@ -1,5 +1,3 @@
-import 'dart:developer' as developer;
-
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:frontline_love/theme.dart';
@@ -32,7 +30,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
-    Future<void> playSound() async {
+    playSound() async {
       var tempPlayer = AudioPlayer();
       await tempPlayer.play(AssetSource(
         "audio/se1.mp3",
@@ -62,13 +60,7 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         ),
       ),
-      body: Center(
-          child: ListView.builder(
-        itemBuilder: (context, index) {
-          return null;
-        },
-        itemCount: 0,
-      )),
+      body: const Center(),
       floatingActionButton: FloatingActionButton(
         onPressed: playSound,
         tooltip: 'Play Sound',
