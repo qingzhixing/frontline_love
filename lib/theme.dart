@@ -11,7 +11,7 @@ var uiTheme = ThemeData(
       fontFamily: "QingKeHuangYou-Regular",
       fontSize: 25,
       wordSpacing: 4,
-      fontWeight: FontWeight.bold,
+      fontWeight: FontWeight.normal,
     ),
   ),
   colorScheme: ColorScheme.fromSeed(seedColor: Colors.blueAccent),
