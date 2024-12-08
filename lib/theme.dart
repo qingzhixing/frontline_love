@@ -13,6 +13,12 @@ var uiTheme = ThemeData(
       wordSpacing: 4,
       fontWeight: FontWeight.normal,
     ),
+    labelSmall: TextStyle(
+      fontFamily: "QingKeHuangYou-Regular",
+      fontSize: 13,
+      wordSpacing: 2,
+      fontWeight: FontWeight.normal,
+    ),
   ),
   colorScheme: ColorScheme.fromSeed(seedColor: Colors.blueAccent),
   cardTheme: const CardTheme(

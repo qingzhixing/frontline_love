@@ -42,6 +42,36 @@ class _MyHomePageState extends State<MyHomePage> {
       ));
     }
 
+    var mainGrid = GridView.builder(
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 4,
+        crossAxisSpacing: 20,
+        mainAxisSpacing: 20,
+      ),
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemCount: 16,
+      itemBuilder: (context, index) {
+        return TextButton(
+          onPressed: () => playSound(index + 1),
+          style: ButtonStyle(
+            shape: WidgetStateProperty.all(
+              RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+            ),
+            backgroundColor: WidgetStateProperty.all(
+              Theme.of(context).cardTheme.color,
+            ),
+          ),
+          child: Text(
+            "se.${index + 1}",
+            style: Theme.of(context).textTheme.labelSmall,
+          ),
+        );
+      },
+    );
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
@@ -66,41 +96,19 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       ),
       body: Center(
-        child: FractionallySizedBox(
-          widthFactor: 0.9,
-          heightFactor: 0.95,
-          alignment: Alignment.center,
-          child: GridView.builder(
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 4,
-              crossAxisSpacing: 20,
-              mainAxisSpacing: 20,
-            ),
-            itemCount: 16,
-            itemBuilder: (context, index) {
-              return TextButton(
-                onPressed: () => playSound(index + 1),
-                style: ButtonStyle(
-                  shape: WidgetStateProperty.all(
-                    RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  ),
-                  backgroundColor: WidgetStateProperty.all(
-                    Theme.of(context).cardTheme.color,
-                  ),
-                ),
-                child: Text("se.${index + 1}"),
-              );
-            },
+          child: FractionallySizedBox(
+        widthFactor: 0.95,
+        heightFactor: 0.7,
+        child: AspectRatio(
+          aspectRatio: 2 / 3,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              mainGrid,
+            ],
           ),
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => playSound(1),
-        tooltip: 'Play Sound',
-        child: const Icon(Icons.audiotrack_outlined),
-      ),
+      )),
     );
   }
 }
