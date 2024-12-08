@@ -45,8 +45,8 @@ class _MyHomePageState extends State<MyHomePage> {
     var mainGrid = GridView.builder(
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 4,
-        crossAxisSpacing: 20,
-        mainAxisSpacing: 20,
+        crossAxisSpacing: 10,
+        mainAxisSpacing: 10,
       ),
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
@@ -61,7 +61,7 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
             ),
             backgroundColor: WidgetStateProperty.all(
-              Theme.of(context).cardTheme.color,
+              Theme.of(context).colorScheme.surfaceBright,
             ),
           ),
           child: Text(
@@ -73,42 +73,45 @@ class _MyHomePageState extends State<MyHomePage> {
     );
 
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Center(
-          child: FractionallySizedBox(
-            widthFactor: 0.5,
-            alignment: Alignment.center,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                Text(
-                  "我最爱玩:",
-                  style: Theme.of(context).textTheme.headlineMedium,
-                ),
-                Text(
-                  "纷争前线",
-                  style: Theme.of(context).textTheme.headlineLarge,
-                ),
-              ],
+        appBar: AppBar(
+          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+          title: Center(
+            child: FractionallySizedBox(
+              widthFactor: 0.5,
+              alignment: Alignment.center,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  Text(
+                    "我最爱玩:",
+                    style: Theme.of(context).textTheme.headlineMedium,
+                  ),
+                  Text(
+                    "纷争前线",
+                    style: Theme.of(context).textTheme.headlineLarge,
+                  ),
+                ],
+              ),
             ),
           ),
         ),
-      ),
-      body: Center(
-          child: FractionallySizedBox(
-        widthFactor: 0.95,
-        heightFactor: 0.7,
-        child: AspectRatio(
-          aspectRatio: 2 / 3,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              mainGrid,
-            ],
+        body: Container(
+          color: Theme.of(context).colorScheme.surfaceDim,
+          child: Center(
+            child: FractionallySizedBox(
+              widthFactor: 0.95,
+              heightFactor: 0.7,
+              child: AspectRatio(
+                aspectRatio: 2 / 3,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    mainGrid,
+                  ],
+                ),
+              ),
+            ),
           ),
-        ),
-      )),
-    );
+        ));
   }
 }
