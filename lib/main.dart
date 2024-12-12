@@ -96,7 +96,12 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         ),
         body: Container(
-          color: Theme.of(context).colorScheme.surfaceDim,
+          decoration: const BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage("assets/img/background.png"),
+              fit: BoxFit.cover,
+            ),
+          ),
           child: Center(
             child: FractionallySizedBox(
               widthFactor: 0.95,
