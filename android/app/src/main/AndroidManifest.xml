@@ -1,6 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <application
-        android:label="frontline_love"
+        android:label="纷争前线·指挥模拟器"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
