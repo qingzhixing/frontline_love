@@ -40,9 +40,9 @@ android {
         options.encoding = "UTF-8"
     }
 
-    def keystorePropertiesFile = rootProject.file("key.properties")
+    def keystorePropertiesFile = rootProject.file("app/key.properties")
     def keystoreProperties = new Properties()
-    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))// FIXME:这里报错
+    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 
     signingConfigs {
         release {
