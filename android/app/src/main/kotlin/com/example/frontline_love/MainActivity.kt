@@ -1,4 +1,4 @@
-package com.example.frontline_love
+package qingzhixing.frontline_love
 
 import io.flutter.embedding.android.FlutterActivity
 
