@@ -36,13 +36,39 @@ class _KeyboardGridState extends State<KeyboardGrid> {
       itemCount: 16,
       itemBuilder: (context, index) {
         return BlurButton(
-          boarderRadius: 10,
+          boarderRadius: 20,
           blurSigma: 5,
-          buttonColor: Colors.blue.withOpacity(0.1),
+          buttonColor: Theme.of(context)
+              .buttonTheme
+              .colorScheme!
+              .surfaceDim
+              .withOpacity(1),
           onPressed: () => playSound(index + 1),
           child: Text(
             "se.${index + 1}",
-            style: Theme.of(context).textTheme.labelSmall,
+            style: TextStyle(
+              fontFamily: Theme.of(context).textTheme.labelSmall!.fontFamily,
+              fontSize: 32,
+              fontWeight: FontWeight.bold,
+              color: Colors.yellow,
+              shadows: const [
+                Shadow(
+                  color: Colors.green,
+                  offset: Offset(6, 6),
+                  blurRadius: 0,
+                ),
+                Shadow(
+                  color: Colors.purple,
+                  offset: Offset(4, 4),
+                  blurRadius: 0,
+                ),
+                Shadow(
+                  color: Colors.deepOrange,
+                  offset: Offset(2, 2),
+                  blurRadius: 0,
+                ),
+              ],
+            ),
           ),
         );
       },

@@ -33,28 +33,26 @@ class _BlurButtonState extends State<BlurButton> {
           sigmaY: widget.blurSigma ?? 0,
         ),
         child: Container(
+          alignment: Alignment.center,
           decoration: BoxDecoration(
-            color: widget.buttonColor,
-            borderRadius: BorderRadius.circular(widget.boarderRadius ?? 0),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.2),
-                blurRadius: 0,
-                offset: const Offset(3, 3),
-              ),
-              BoxShadow(
-                color: Colors.white.withOpacity(0.2),
-                blurRadius: 0,
-                offset: const Offset(-3, -3),
-              ),
-            ],
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              stops: [0.0, 0.15, 0.85, 1.0],
+              colors: [
+                Colors.white.withOpacity(0.8),
+                Colors.white.withOpacity(0.2),
+                Colors.black.withOpacity(0.2),
+                Colors.black.withOpacity(0.8),
+              ],
+            ),
           ),
-          child: ElevatedButton(
+          child: TextButton(
             style: ButtonStyle(
-              foregroundColor: WidgetStateProperty.all(widget.buttonColor),
+              foregroundColor: WidgetStateProperty.all(Colors.white),
               backgroundColor: WidgetStateProperty.all(Colors.transparent),
-              // overlayColor: WidgetStateProperty.all(Colors.transparent),
               shadowColor: WidgetStateProperty.all(Colors.transparent),
+              overlayColor: WidgetStateProperty.all(Colors.transparent),
               shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                 RoundedRectangleBorder(
                   borderRadius:
@@ -63,7 +61,7 @@ class _BlurButtonState extends State<BlurButton> {
               ),
             ),
             onPressed: widget.onPressed,
-            child: widget.child,
+            child: widget.child ?? Container(),
           ),
         ),
       ),
