@@ -2,6 +2,8 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'dart:developer' as developer;
 
+import 'package:frontline_love/blur_button.dart';
+
 class KeyboardGrid extends StatefulWidget {
   const KeyboardGrid({super.key});
 
@@ -33,17 +35,11 @@ class _KeyboardGridState extends State<KeyboardGrid> {
       physics: const NeverScrollableScrollPhysics(),
       itemCount: 16,
       itemBuilder: (context, index) {
-        return TextButton(
+        return BlurButton(
+          boarderRadius: 10,
+          blurSigma: 5,
+          buttonColor: Colors.blue.withOpacity(0.1),
           onPressed: () => playSound(index + 1),
-          style: ButtonStyle(
-            shape: WidgetStateProperty.all(
-              RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
-            ),
-            backgroundColor:
-                WidgetStateProperty.all(Colors.white.withOpacity(0.5)),
-          ),
           child: Text(
             "se.${index + 1}",
             style: Theme.of(context).textTheme.labelSmall,
