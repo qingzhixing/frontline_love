@@ -35,7 +35,8 @@ class _BlurButtonState extends State<BlurButton> {
         child: TextButton(
           style: ButtonStyle(
             foregroundColor: WidgetStateProperty.all(Colors.white),
-            backgroundColor: WidgetStateProperty.all(Colors.transparent),
+            backgroundColor: WidgetStateProperty.all(
+                widget.buttonColor ?? Colors.transparent),
             shadowColor: WidgetStateProperty.all(Colors.transparent),
             // overlayColor: WidgetStateProperty.all(Colors.transparent),
             padding: WidgetStateProperty.all(EdgeInsets.zero),
@@ -49,6 +50,7 @@ class _BlurButtonState extends State<BlurButton> {
           child: Container(
             alignment: Alignment.center,
             decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(widget.boarderRadius ?? 0),
               gradient: LinearGradient(
                 begin: Alignment.lerp(
                       Alignment.centerLeft,
@@ -69,6 +71,10 @@ class _BlurButtonState extends State<BlurButton> {
                   Colors.black.withOpacity(0.2),
                   Colors.black.withOpacity(0.8),
                 ],
+              ),
+              border: Border.all(
+                color: Colors.white.withOpacity(0.2),
+                width: 1,
               ),
             ),
             child: widget.child ?? Container(),
