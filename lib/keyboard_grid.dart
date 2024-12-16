@@ -46,24 +46,7 @@ class _KeyboardGridState extends State<KeyboardGrid> {
               fontFamily: Theme.of(context).textTheme.labelSmall!.fontFamily,
               fontSize: 24,
               fontWeight: FontWeight.bold,
-              color: Colors.yellow,
-              shadows: const [
-                Shadow(
-                  color: Colors.green,
-                  offset: Offset(6, 6),
-                  blurRadius: 0,
-                ),
-                Shadow(
-                  color: Colors.purple,
-                  offset: Offset(4, 4),
-                  blurRadius: 0,
-                ),
-                Shadow(
-                  color: Colors.deepOrange,
-                  offset: Offset(2, 2),
-                  blurRadius: 0,
-                ),
-              ],
+              color: Colors.white,
             ),
           ),
         );
