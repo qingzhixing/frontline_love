@@ -51,7 +51,7 @@ class _BlurButtonState extends State<BlurButton> {
         child: widget.child ?? Container(),
       ).blurry(
         blur: 5,
-        elevation: 30,
+        elevation: 0,
         color: Colors.transparent,
         padding: const EdgeInsets.all(0),
         borderRadius: BorderRadius.circular(widget.boarderRadius ?? 0),

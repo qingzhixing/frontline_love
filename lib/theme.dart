@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+const String customFont = "QingKeHuangYou-Regular";
+
 var uiTheme = ThemeData(
   textTheme: const TextTheme(
     headlineMedium: TextStyle(

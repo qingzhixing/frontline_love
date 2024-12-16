@@ -1,4 +1,8 @@
+import 'dart:io';
+
+import 'package:blurrycontainer/blurrycontainer.dart';
 import 'package:flutter/material.dart';
+import 'package:frontline_love/blury_button.dart';
 import 'package:frontline_love/keyboard_grid.dart';
 import 'package:frontline_love/theme.dart';
 
@@ -30,37 +34,44 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Center(
-          child: FractionallySizedBox(
-            widthFactor: 0.5,
-            alignment: Alignment.center,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                Text(
-                  "我最爱玩:",
-                  style: Theme.of(context).textTheme.headlineMedium,
+    return Container(
+      decoration: const BoxDecoration(
+        image: DecorationImage(
+          image: AssetImage("assets/img/background.jpg"),
+          fit: BoxFit.cover,
+        ),
+      ),
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        appBar: AppBar(
+          backgroundColor: Colors.transparent,
+          centerTitle: true,
+          title: Container(
+            padding: const EdgeInsets.symmetric(vertical: 3),
+            margin: const EdgeInsets.only(top: 3),
+            decoration: BoxDecoration(
+              borderRadius: const BorderRadius.all(Radius.circular(10)),
+              color: Colors.purple.withOpacity(.5),
+              border: Border.all(
+                color: Colors.white.withOpacity(0.2),
+                width: 2,
+              ),
+            ),
+            child: const Center(
+              child: Text(
+                "我爱玩纷争前线",
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 24,
+                  fontWeight: FontWeight.normal,
+                  fontFamily: customFont,
+                  letterSpacing: 5,
                 ),
-                Text(
-                  "纷争前线",
-                  style: Theme.of(context).textTheme.headlineLarge,
-                ),
-              ],
+              ),
             ),
           ),
         ),
-      ),
-      body: Container(
-        decoration: const BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage("assets/img/background.png"),
-            fit: BoxFit.cover,
-          ),
-        ),
-        child: const Center(
+        body: const Center(
           child: FractionallySizedBox(
             widthFactor: 0.95,
             heightFactor: 0.7,
