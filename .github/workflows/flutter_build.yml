@@ -25,10 +25,17 @@ jobs:
           distribution: 'zulu'
           java-version: 11
 
+      - name: Test connection
+        run: curl "https://storage.googleapis.com/flutter_infra_release/releases/releases_linux.json"
+
+      - name: Fix flutter SDK folder permission
+        run: git config --global --add safe.directory /tmp/flutter/--
+
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version-file: pubspec.yaml
+          channel: stable
+          flutter-version: 3.19.0
 
       - name: Display Flutter version
         run: flutter --version
@@ -65,11 +72,18 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: 8
+          
+      - name: Test connection
+        run: curl "https://storage.googleapis.com/flutter_infra_release/releases/releases_linux.json"
+
+      - name: Fix flutter SDK folder permission
+        run: git config --global --add safe.directory /tmp/flutter/--
       
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version-file: pubspec.yaml
+          channel: stable
+          flutter-version: 3.19.0
 
       - uses: finnp/create-file-action@master
         env:
