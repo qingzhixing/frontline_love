@@ -40,7 +40,6 @@ android {
         options.encoding = "UTF-8"
     }
 
-    }
 
     buildTypes {
         release {
