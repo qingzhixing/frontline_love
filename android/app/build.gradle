@@ -35,11 +35,6 @@ android {
         versionName = flutter.versionName
     }
 
-        
-    tasks.withType(JavaCompile) {
-        options.encoding = "UTF-8"
-    }
-
 
     buildTypes {
         release {
