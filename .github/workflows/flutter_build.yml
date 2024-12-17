@@ -17,6 +17,7 @@ on:
 
 jobs:
   build:
+    if: contains(github.event.commits[0].message, '[build]')
     name: Build
     runs-on: ubuntu-latest
     steps:
