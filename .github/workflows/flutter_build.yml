@@ -53,11 +53,13 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
-      - run: echo $ENCODED_KEYSTORE | base64 -di > android/app/keystore.jks
+      - name: generate keystore
+        run: echo $ENCODED_KEYSTORE | base64 -di > android/app/keystore.jks
         env:
           ENCODED_KEYSTORE: ${{ secrets.ENCODED_KEYSTORE }}
 
-      - run: flutter build apk --release  --no-shrink
+      - name: Build apk
+        run: flutter build apk --release  --no-shrink
         env:
           KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
           KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
@@ -101,18 +103,22 @@ jobs:
           channel: stable
           flutter-version: 3.24.0
 
-      - uses: finnp/create-file-action@master
+      - name: generate ignoreConfig.dart
+        uses: finnp/create-file-action@master
         env:
           FILE_NAME: lib/common/config/ignoreConfig.dart
           FILE_DATA: class NetConfig { static const CLIENT_ID = "${{ secrets.CLIENT_ID }}"; static const CLIENT_SECRET = "${{ secrets.CLIENT_SECRET }}";}
       
-      - run: flutter pub get
+      - name: Install dependencies
+        run: flutter pub get
 
-      - run: echo $ENCODED_KEYSTORE | base64 -di > android/app/keystore.jks
+      - name: Create keystore
+        run: echo $ENCODED_KEYSTORE | base64 -di > android/app/keystore.jks
         env:
           ENCODED_KEYSTORE: ${{ secrets.ENCODED_KEYSTORE }}
 
-      - run: flutter build apk --release  --no-shrink
+      - name: Build apk
+        run: flutter build apk --release  --no-shrink
         env:
           KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
           KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
