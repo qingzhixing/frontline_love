@@ -17,7 +17,6 @@ on:
 
 jobs:
   build:
-    if: contains(github.event.commits[0].message, '[build]')
     name: Build
     runs-on: ubuntu-latest
     steps:
@@ -63,49 +62,20 @@ jobs:
           KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
           KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD}}
-
-      - name: Upload APK
-        uses: actions/upload-artifact@v4
-        with:
-          name: build-apk
-          path: build/app/outputs/apk/release/app-release.apk
-
-  build-release:
-    name: Build Release
-    if: contains(github.event.commits[0].message, '[build]') &&
-      contains(github.event.commits[0].message, '[release]')
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - name: Download APK from build
-        uses: actions/download-artifact@v4
-        with:
-          name: build-apk
-
-      - name: Display structure of downloaded files
-        run: ls -R
-
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1.1.4
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: "Build-${{ github.sha }}"
-          release_name: ${{ github.event.commits[0].message }}
-          
-      - name: Upload Release APK
+  
+      - name: Release
+        if: contains(github.event.commits[0].message, '[release]')
         id: upload_release_asset
-        uses: actions/upload-release-asset@v1.0.1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        uses: softprops/action-gh-release@v2
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./app-release.apk
-          asset_name: app-release.apk
-          asset_content_type: application/zip
+          token: ${{ secrets.GITHUB_TOKEN }}
+          prerelease: true
+          files: build/app/outputs/apk/release/app-*.apk
+          tag_name: "Build-Release"
+          body: "This is a pre-release build for testing purposes only. Please do not use this build for production."
+          name: "Build - ${{github.event.commits[0].message}}"
 
-  tag-release-generate-apk:
+  tag-release:
     name: Generate APK
     if: startsWith(github.ref, 'refs/tags/')
     runs-on: ubuntu-latest
@@ -148,40 +118,13 @@ jobs:
           KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD}}
 
-      - name: Upload APK
-        uses: actions/upload-artifact@v4
-        with:
-          name: tag-apk
-          path: build/app/outputs/apk/release/app-release.apk
-
-  release:
-    name: Release APK
-    needs: tag-release-generate-apk
-    if: startsWith(github.ref, 'refs/tags/')
-    runs-on: ubuntu-latest
-    steps:
-      - name: Download APK from build
-        uses: actions/download-artifact@v4
-        with:
-          name: tag-apk
-      - name: Display structure of downloaded files
-        run: ls -R
-
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1.1.4
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ github.ref }}
-          release_name: ${{ github.ref }}
-      - name: Upload Release APK
+      - name: Release
         id: upload_release_asset
-        uses: actions/upload-release-asset@v1.0.1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        uses: softprops/action-gh-release@v2
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./app-release.apk
-          asset_name: app-release.apk
-          asset_content_type: application/zip
+          token: ${{ secrets.GITHUB_TOKEN }}
+          prerelease: false
+          files: build/app/outputs/apk/release/app-*.apk
+          tag_name: ${{ github.ref_name }}
+          name: ${{ github.ref_name }}
+          make_latest: true
