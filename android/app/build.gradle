@@ -35,6 +35,23 @@ android {
         versionName = flutter.versionName
     }
 
+    try{
+        // 本地构建 云端使用github actions构建
+        def keystorePropertiesFile = rootProject.file("app/key.properties")
+        def keystoreProperties = new Properties()
+        keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+        signingConfigs {
+            debug {
+                keyAlias keystoreProperties['keyAlias']
+                keyPassword keystoreProperties['keyPassword']
+                storeFile file(keystoreProperties['storeFile'])
+                storePassword keystoreProperties['storePassword']
+            }
+        }
+    }catch(Exception e){
+        // ignore
+    }
+
 
     buildTypes {
         release {

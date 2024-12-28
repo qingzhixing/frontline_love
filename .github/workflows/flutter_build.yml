@@ -17,8 +17,8 @@ on:
 
 jobs:
   build:
-    if: contains(github.event.commits[0].message, '[build]')
     name: Build
+    if: ${{! contains(github.event.head_commit.message, '[skip ci]')}}
     runs-on: ubuntu-latest
     steps:
       - name: Clone repository
@@ -54,21 +54,33 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
-      - run: echo $ENCODED_KEYSTORE | base64 -di > android/app/keystore.jks
+      - name: generate keystore
+        run: echo $ENCODED_KEYSTORE | base64 -di > android/app/keystore.jks
         env:
           ENCODED_KEYSTORE: ${{ secrets.ENCODED_KEYSTORE }}
 
-      - run: flutter build apk --release  --no-shrink
+      - name: Build apk
+        run: flutter build apk --release  --no-shrink
         env:
           KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
           KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD}}
+  
+      - name: Release
+        if: contains(github.event.commits[0].message, '[release]')
+        id: upload_release_asset
+        uses: softprops/action-gh-release@v2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          prerelease: true
+          files: build/app/outputs/apk/release/app-*.apk
+          tag_name: "Build-Release"
+          body: "This is a pre-release build for testing purposes only. Please do not use this build for production."
+          name: "Build - ${{github.event.commits[0].message}}"
 
-  apk:
+  tag-release:
     name: Generate APK
-    if: startsWith(github.ref, 'refs/tags/') || 
-      contains(github.event.commits[0].message, '[apk]') &&
-      contains(github.event.commits[0].message, '[build]')
+    if: startsWith(github.ref, 'refs/tags/')
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -92,57 +104,34 @@ jobs:
           channel: stable
           flutter-version: 3.24.0
 
-      - uses: finnp/create-file-action@master
+      - name: generate ignoreConfig.dart
+        uses: finnp/create-file-action@master
         env:
           FILE_NAME: lib/common/config/ignoreConfig.dart
           FILE_DATA: class NetConfig { static const CLIENT_ID = "${{ secrets.CLIENT_ID }}"; static const CLIENT_SECRET = "${{ secrets.CLIENT_SECRET }}";}
       
-      - run: flutter pub get
+      - name: Install dependencies
+        run: flutter pub get
 
-      - run: echo $ENCODED_KEYSTORE | base64 -di > android/app/keystore.jks
+      - name: Create keystore
+        run: echo $ENCODED_KEYSTORE | base64 -di > android/app/keystore.jks
         env:
           ENCODED_KEYSTORE: ${{ secrets.ENCODED_KEYSTORE }}
 
-      - run: flutter build apk --release  --no-shrink
+      - name: Build apk
+        run: flutter build apk --release  --no-shrink
         env:
           KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
           KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD}}
 
-      - name: Upload APK
-        uses: actions/upload-artifact@v4
-        with:
-          name: apk
-          path: build/app/outputs/apk/release/app-release.apk
-
-  release:
-    name: Release APK
-    needs: apk
-    if: startsWith(github.ref, 'refs/tags/')
-    runs-on: ubuntu-latest
-    steps:
-      - name: Download APK from build
-        uses: actions/download-artifact@v4
-        with:
-          name: apk
-      - name: Display structure of downloaded files
-        run: ls -R
-
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1.1.4
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ github.ref }}
-          release_name: ${{ github.ref }}
-      - name: Upload Release APK
+      - name: Release
         id: upload_release_asset
-        uses: actions/upload-release-asset@v1.0.1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        uses: softprops/action-gh-release@v2
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./app-release.apk
-          asset_name: app-release.apk
-          asset_content_type: application/zip
+          token: ${{ secrets.GITHUB_TOKEN }}
+          prerelease: false
+          files: build/app/outputs/apk/release/app-*.apk
+          tag_name: ${{ github.ref_name }}
+          name: ${{ github.ref_name }}
+          make_latest: true
