@@ -26,10 +26,11 @@ class _KeyboardGridState extends State<KeyboardGrid> {
   @override
   Widget build(BuildContext context) {
     return GridView.builder(
+      padding: const EdgeInsets.all(10),
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 4,
-        crossAxisSpacing: 5,
-        mainAxisSpacing: 5,
+        crossAxisSpacing: 10,
+        mainAxisSpacing: 10,
       ),
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),

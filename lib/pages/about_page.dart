@@ -13,11 +13,11 @@ class AboutPage extends StatelessWidget {
       ),
       body: Center(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             const Image(
-              image: AssetImage("assets/icon/icon.png"),
+              image: AssetImage("assets/img/qingzhixing.jpg"),
               width: 200,
               height: 200,
             ),
@@ -29,7 +29,7 @@ class AboutPage extends StatelessWidget {
                   mode: LaunchMode.externalApplication,
                 );
               },
-              child: const Text("Github"),
+              child: const Text("项目源码: @Github"),
             )
           ],
         ),

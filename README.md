@@ -1,16 +1,26 @@
-# frontline_love
+# Frontline Love
 
-A new Flutter project.
+我要玩纷争前线!!
 
-## Getting Started
+## 技术
 
-This project is a starting point for a Flutter application.
+本项目使用 Flutter 构建，以支持全平台。
 
-A few resources to get you started if this is your first Flutter project:
+## 软件功能
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+* 手动点击按钮播放特定宏声音 (<se.1> ~ <se.16>)
+* 支持粘贴宏并解析，模拟宏声音运行 (目前未完成)
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## 软件下载
+
+[Github Release](https://github.com/qingzhixing/frontline_love/releases/latest)
+
+## 软件效果
+
+![home_page](assets/readme_img/home_page.png)
+![about_page](assets/readme_img/about_me.png)
+
+## Todo List
+
+* [ ] 支持宏解析
+* [ ] 支持横屏以及宽屏设备使用
