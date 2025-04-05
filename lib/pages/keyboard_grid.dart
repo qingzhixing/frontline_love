@@ -14,7 +14,7 @@ class KeyboardGrid extends StatefulWidget {
 class _KeyboardGridState extends State<KeyboardGrid> {
   void playSound(int soundEffectIndex) async {
     if (soundEffectIndex < 1 || soundEffectIndex > 16) {
-      developer.log("Invalid sound effect index$soundEffectIndex");
+      developer.log("Invalid sound effect index $soundEffectIndex");
       return;
     }
     var tempPlayer = AudioPlayer();
@@ -28,8 +28,8 @@ class _KeyboardGridState extends State<KeyboardGrid> {
     return GridView.builder(
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 4,
-        crossAxisSpacing: 10,
-        mainAxisSpacing: 10,
+        crossAxisSpacing: 5,
+        mainAxisSpacing: 5,
       ),
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),

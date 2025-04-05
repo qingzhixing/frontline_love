@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:frontline_love/keyboard_grid.dart';
 import 'package:frontline_love/theme.dart';
 
+import 'pages/about_page.dart';
+import 'pages/home_page.dart';
+
 void main() {
-  runApp(const MyApp());
+  runApp(const FrontlineLoveApp());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class FrontlineLoveApp extends StatelessWidget {
+  const FrontlineLoveApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -15,74 +17,81 @@ class MyApp extends StatelessWidget {
       title: '我要打纷争前线!',
       theme: uiTheme,
       debugShowCheckedModeBanner: false,
-      home: const MyHomePage(),
+      home: const MainScreen(),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key});
+class MainScreen extends StatefulWidget {
+  const MainScreen({super.key});
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<MainScreen> createState() => _MainScreenState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _MainScreenState extends State<MainScreen> {
+  int _currentIndex = 0;
+  final PageController _pageController = PageController();
+
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: const BoxDecoration(
-        image: DecorationImage(
-          image: AssetImage("assets/img/background.jpg"),
-          fit: BoxFit.cover,
-        ),
+    return Scaffold(
+      body: PageView(
+        controller: _pageController,
+        onPageChanged: (index) {
+          setState(() {
+            _currentIndex = index;
+          });
+        },
+        children: const [
+          HomePage(),
+          Icon(Icons.link),
+          AboutPage(),
+          Icon(Icons.settings),
+        ],
       ),
-      child: Scaffold(
-        backgroundColor: Colors.transparent,
-        appBar: AppBar(
-          backgroundColor: Colors.transparent,
-          centerTitle: true,
-          title: Container(
-            padding: const EdgeInsets.symmetric(vertical: 3),
-            margin: const EdgeInsets.only(top: 3),
-            decoration: BoxDecoration(
-              borderRadius: const BorderRadius.all(Radius.circular(10)),
-              color: Colors.purple.withOpacity(.5),
-              border: Border.all(
-                color: Colors.white.withOpacity(0.2),
-                width: 2,
-              ),
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _currentIndex,
+        onTap: (index) {
+          _pageController.jumpToPage(index);
+        },
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon(
+              Icons.home,
             ),
-            child: const Center(
-              child: Text(
-                "我爱玩纷争前线",
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 24,
-                  fontWeight: FontWeight.normal,
-                  fontFamily: customFont,
-                  letterSpacing: 5,
-                ),
-              ),
-            ),
+            backgroundColor: Colors.transparent,
+            label: 'Home',
           ),
-        ),
-        body: const Center(
-          child: FractionallySizedBox(
-            widthFactor: 0.95,
-            heightFactor: 0.7,
-            child: AspectRatio(
-              aspectRatio: 2 / 3,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  KeyboardGrid(),
-                ],
-              ),
+          BottomNavigationBarItem(
+            icon: Icon(
+              Icons.link,
             ),
+            backgroundColor: Colors.transparent,
+            label: 'Macro',
           ),
-        ),
+          BottomNavigationBarItem(
+            icon: Icon(
+              Icons.more_horiz,
+            ),
+            backgroundColor: Colors.transparent,
+            label: 'About',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(
+              Icons.settings,
+            ),
+            backgroundColor: Colors.transparent,
+            label: 'Settings',
+          )
+        ],
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
   }
 }
