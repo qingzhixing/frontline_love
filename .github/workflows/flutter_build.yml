@@ -75,11 +75,11 @@ jobs:
           prerelease: true
           files: build/app/outputs/apk/release/app-*.apk
           tag_name: "Build-Release ${{github.event.commits[0].message}}"
-          body: "This is a pre-release build for testing purposes only. Please do not use this build for production."
+          body: "Github Action Build Release"
           name: "Build - ${{github.event.commits[0].message}}"
 
   tag-release:
-    name: Generate APK
+    name: tag-release
     if: startsWith(github.ref, 'refs/tags/')
     runs-on: ubuntu-latest
     steps:
