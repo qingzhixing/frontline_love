@@ -72,7 +72,7 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          prerelease: true
+          prerelease: false
           files: build/app/outputs/apk/release/app-*.apk
           tag_name: "Build-Release ${{github.event.commits[0].message}}"
           body: "Github Action Build Release"
