@@ -18,7 +18,7 @@ on:
 env:
   FLUTTER_VERSION: "3.24.0"  # 集中管理Flutter版本
   JAVA_VERSION: "17"
-  BUILD_DIR: "build/app/outputs"
+  BUILD_DIR_PREFIX: "build/app/outputs"
 
 jobs:
   setup:
@@ -79,7 +79,7 @@ jobs:
         include:
           - platform: android
             build-cmd: apk
-            artifact-path: ${{ env.BUILD_DIR }}/apk/release/frontline_love-*.apk
+            artifact-path: " build/app/outputs/apk/release/frontline_love-*.apk"
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
