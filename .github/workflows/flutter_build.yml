@@ -172,7 +172,7 @@ jobs:
 
       # 上传构建产物（使用通配符匹配 frontline_love-*）
       - name: Upload artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.platform }}-build
           path: build/app/outputs/apk/release/frontline_love-*.apk
