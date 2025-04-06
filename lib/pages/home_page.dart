@@ -22,7 +22,8 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return BackgroundScaffold(
-      backgroundImageProvider: const AssetImage("assets/img/background.jpg"),
+      backgroundImageProvider:
+          const AssetImage("assets/img/background_home.jpg"),
       scaffold: Scaffold(
         extendBody: true, //让主体内容延伸到导航栏后面
         backgroundColor: Colors.transparent,

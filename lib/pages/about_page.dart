@@ -8,7 +8,7 @@ class AboutPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("我要玩纷争前线!"),
+        title: const Text("纷争前线·指挥模拟器"),
         centerTitle: true,
       ),
       body: Center(

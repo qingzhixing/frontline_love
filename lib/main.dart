@@ -16,7 +16,7 @@ class FrontlineLoveApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: '我要打纷争前线!',
+      title: '纷争前线·指挥模拟器',
       theme: uiTheme,
       debugShowCheckedModeBanner: false,
       home: const MainScreen(),
