@@ -59,6 +59,7 @@ class _MacroPageState extends State<MacroPage>
   final _textFieldController = TextEditingController();
   @override
   Widget build(BuildContext context) {
+    super.build(context); // 必须调用
     return BackgroundScaffold(
       backgroundImageProvider:
           const AssetImage("assets/img/background_macro.jpg"),
