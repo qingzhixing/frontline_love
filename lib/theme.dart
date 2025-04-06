@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 const String customFont = "QingKeHuangYou-Regular";
 
-var uiTheme = ThemeData(
+var customTheme = ThemeData(
   // 去掉水波纹效果
   // splashColor: Colors.transparent,
   // 去掉长按效果

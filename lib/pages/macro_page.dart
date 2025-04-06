@@ -1,7 +1,50 @@
 import 'package:flutter/material.dart';
 import 'package:frontline_love/background_scaffold.dart';
 
+import 'dart:developer' as developer;
+
 import '../theme.dart';
+
+const textButtonTextStyle = TextStyle(
+  color: Colors.blueAccent,
+  fontFamily: customFont,
+  fontWeight: FontWeight.normal,
+  letterSpacing: 2,
+  fontSize: 20,
+);
+
+class MacroOutlinedButton extends StatefulWidget {
+  final Widget buttonChild;
+  final VoidCallback? onPressed;
+  const MacroOutlinedButton({
+    super.key,
+    required this.buttonChild,
+    this.onPressed,
+  });
+
+  @override
+  State<StatefulWidget> createState() => _MacroOutlinedButton();
+}
+
+class _MacroOutlinedButton extends State<MacroOutlinedButton> {
+  @override
+  Widget build(BuildContext context) {
+    return OutlinedButton(
+      style: OutlinedButton.styleFrom(
+        side: const BorderSide(color: Colors.black, width: 1.0),
+        backgroundColor: Colors.white.withAlpha(200),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8.0),
+        ),
+      ),
+      onPressed: widget.onPressed,
+      child: Padding(
+        padding: const EdgeInsets.only(left: 10, right: 10, top: 5, bottom: 5),
+        child: widget.buttonChild,
+      ),
+    );
+  }
+}
 
 class MacroPage extends StatefulWidget {
   const MacroPage({super.key});
@@ -10,8 +53,10 @@ class MacroPage extends StatefulWidget {
   State<MacroPage> createState() => _MacroPageState();
 }
 
-class _MacroPageState extends State<MacroPage> {
+class _MacroPageState extends State<MacroPage>
+    with AutomaticKeepAliveClientMixin {
   final _scrollController = ScrollController();
+  final _textFieldController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return BackgroundScaffold(
@@ -63,6 +108,13 @@ class _MacroPageState extends State<MacroPage> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 TextField(
+                  controller: _textFieldController,
+                  style: const TextStyle(
+                    fontFamily: customFont,
+                    fontSize: 18,
+                    letterSpacing: 1,
+                  ),
+
                   maxLines: 15, // null 表示不限制行数，根据内容自动扩展
                   scrollPhysics:
                       const AlwaysScrollableScrollPhysics(), // 始终启用滚动
@@ -71,10 +123,12 @@ class _MacroPageState extends State<MacroPage> {
                   decoration: InputDecoration(
                     filled: true,
                     fillColor: Colors.white.withAlpha(200),
-                    border: const OutlineInputBorder(),
-                    hintText: '在此处粘贴宏内容',
+                    border: const OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(10))),
+                    hintText: "在此处粘贴宏内容",
                     hintStyle: const TextStyle(
                       fontFamily: customFont,
+                      fontSize: 18,
                       letterSpacing: 2,
                     ),
                   ),
@@ -91,45 +145,24 @@ class _MacroPageState extends State<MacroPage> {
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    TextButton(
-                      style: ButtonStyle(
-                        backgroundColor: WidgetStatePropertyAll(
-                          Colors.white.withAlpha(200),
-                        ),
+                    MacroOutlinedButton(
+                      buttonChild: const Text(
+                        "清空",
+                        style: textButtonTextStyle,
                       ),
-                      onPressed: () {},
-                      child: const Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 10),
-                        child: Text(
-                          "清空",
-                          style: TextStyle(
-                            color: Colors.blueAccent,
-                            fontFamily: customFont,
-                            fontWeight: FontWeight.normal,
-                            fontSize: 16,
-                          ),
-                        ),
-                      ),
+                      onPressed: () {
+                        _textFieldController.text = "";
+                        setState(() {});
+                      },
                     ),
-                    TextButton(
-                      style: ButtonStyle(
-                        backgroundColor: WidgetStatePropertyAll(
-                          Colors.white.withAlpha(200),
-                        ),
+                    MacroOutlinedButton(
+                      buttonChild: const Text(
+                        "播放",
+                        style: textButtonTextStyle,
                       ),
-                      onPressed: () {},
-                      child: const Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 10),
-                        child: Text(
-                          "播放",
-                          style: TextStyle(
-                            color: Colors.blueAccent,
-                            fontFamily: customFont,
-                            fontWeight: FontWeight.normal,
-                            fontSize: 16,
-                          ),
-                        ),
-                      ),
+                      onPressed: () {
+                        developer.log(_textFieldController.text);
+                      },
                     ),
                   ],
                 ),
@@ -140,4 +173,7 @@ class _MacroPageState extends State<MacroPage> {
       ),
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }
