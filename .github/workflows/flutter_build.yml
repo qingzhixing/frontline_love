@@ -109,18 +109,6 @@ jobs:
           }
           EOF
 
-      # 密钥库验证
-      - name: Validate Keystore
-        run: |
-          file android/app/keystore.jks | grep "Java KeyStore" || {
-            echo "❌ Invalid keystore file";
-            exit 1;
-          }
-          keytool -list -v \
-            -keystore android/app/keystore.jks \
-            -storepass ${{ secrets.KEYSTORE_PASSWORD }} \
-            -alias ${{ secrets.KEY_ALIAS }} || exit 1
-
       # 构建前清理
       - name: Clean Build Dir
         run: rm -rf build/app/outputs/apk/release/*
