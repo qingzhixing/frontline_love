@@ -1,11 +1,11 @@
-name: Flutter Build
+name: Flutter CI/CD Pipeline
 
 on:
   push:
     branches:
       - master
     tags:
-      - "v*" # Push events to matching v*, i.e. v1.0, v20.15.10
+      - "v[0-9]+.[0-9]+.[0-9]+"  # 更严格的版本tag正则匹配
   pull_request:
     paths-ignore:
       - '**/*.md'
@@ -15,130 +15,224 @@ on:
       - '**/*.png'
       - '**/*.jpg'
 
+env:
+  FLUTTER_VERSION: "3.24.0"  # 集中管理Flutter版本
+  JAVA_VERSION: "17"
+  BUILD_DIR: "build/app/outputs"
+
 jobs:
+  setup:
+    name: Setup Environment
+    runs-on: ubuntu-latest
+    outputs:
+      cache-key: ${{ steps.setup-cache.outputs.cache-key }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # 生成基于pubspec.lock的缓存key
+      - name: Generate cache key
+        id: setup-cache
+        run: echo "cache-key=flutter-${{ runner.os }}-pub-${{ hashFiles('pubspec.lock') }}" >> $GITHUB_OUTPUT
+
+  test:
+    name: Run Tests
+    needs: setup
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # 使用缓存恢复依赖
+      - name: Restore dependencies cache
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.pub-cache
+            /tmp/flutter
+          key: ${{ needs.setup.outputs.cache-key }}
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+
+      # 代码静态分析
+      - name: Static code analysis
+        run: flutter analyze
+
+      # 运行单元测试
+      - name: Run unit tests
+        run: flutter test
+
+      # 集成测试（可选）
+      - name: Run integration tests
+        if: github.event_name == 'pull_request'
+        run: flutter test integration_test/
+
   build:
-    name: Build
-    if: ${{! contains(github.event.head_commit.message, '[skip ci]')}}
+    name: Build Artifacts
+    needs: test
+    strategy:
+      matrix:
+        platform: [android]  # 可扩展ios, web
+        include:
+          - platform: android
+            build-cmd: apk
+            artifact-path: ${{ env.BUILD_DIR }}/apk/release/frontline_love-*.apk
     runs-on: ubuntu-latest
     steps:
-      - name: Clone repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Set up JDK
-        uses: actions/setup-java@v2
+      - name: Restore cache
+        uses: actions/cache@v3
         with:
-          distribution: 'zulu'
-          java-version: 17
-
-      - name: Test connection
-        run: curl "https://storage.googleapis.com/flutter_infra_release/releases/releases_linux.json"
-
-      - name: Fix flutter SDK folder permission
-        run: git config --global --add safe.directory /tmp/flutter/--
+          path: |
+            ~/.pub-cache
+            /tmp/flutter
+          key: ${{ needs.setup.outputs.cache-key }}
 
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
           channel: stable
-          flutter-version: 3.24.0
+          flutter-version: ${{ env.FLUTTER_VERSION }}
 
-      - name: Display Flutter version
-        run: flutter --version
-
-      - name: Create ignoreConfig.dart
-        uses: finnp/create-file-action@master
-        env:
-          FILE_NAME: lib/common/config/ignoreConfig.dart
-          FILE_DATA: class NetConfig { static const CLIENT_ID = "${{ secrets.CLIENT_ID }}"; static const CLIENT_SECRET = "${{ secrets.CLIENT_SECRET }}";}
-      
-      - name: Install dependencies
-        run: flutter pub get
-
-      - name: generate keystore
-        run: echo $ENCODED_KEYSTORE | base64 -di > android/app/keystore.jks
+      # 从安全存储加载配置文件
+      - name: Setup config files
         env:
           ENCODED_KEYSTORE: ${{ secrets.ENCODED_KEYSTORE }}
-
-      - name: Build apk
-        run: flutter build apk --build-name=1.0.${{ github.run_number }} --build-number=${{ github.run_number }} --release  --no-shrink
-        env:
-          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
-          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
-          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD}}
-
-      - name: Generate tag
-        id: generated_tag
-        run: echo "tag=$(date +%Y%m%d%H%M%S)" >> $GITHUB_OUTPUT
-      
-      - name: Use the tag
-        run: echo "Generated tag:" + ${{ steps.generated_tag.outputs.tag }}
-  
-      - name: Release
-        if: contains(github.event.commits[0].message, '[release]')
-        id: upload_release_asset
-        uses: softprops/action-gh-release@v2
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          prerelease: true
-          files: build/app/outputs/apk/release/app-*.apk
-          tag_name: "Pre-Release-${{ steps.generated_tag.outputs.tag }}"
-          body: "Github Action Build Pre-Release"
-          name: "${{github.event.commits[0].message}}"
-
-  tag-release:
-    name: tag-release
-    if: startsWith(github.ref, 'refs/tags/')
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup JDK
-        uses: actions/setup-java@v2
-        with:
-          distribution: 'zulu'
-          java-version: 17
+          CLIENT_ID: ${{ secrets.CLIENT_ID }}
+          CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
+        run: |
+          # 生成密钥库文件
+          echo "$ENCODED_KEYSTORE" | base64 -di > android/app/keystore.jks
           
-      - name: Test connection
-        run: curl "https://storage.googleapis.com/flutter_infra_release/releases/releases_linux.json"
+          # 使用更安全的配置文件生成方式
+          mkdir -p lib/common/config
+          cat > lib/common/config/ignoreConfig.dart <<EOF
+          // Auto-generated configuration
+          class NetConfig {
+            static const CLIENT_ID = "$CLIENT_ID";
+            static const CLIENT_SECRET = "$CLIENT_SECRET";
+          }
+          EOF
 
-      - name: Fix flutter SDK folder permission
-        run: git config --global --add safe.directory /tmp/flutter/--
-      
-      - name: Set up Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          channel: stable
-          flutter-version: 3.24.0
+      # 动态版本号管理
+      - name: Set build version
+        id: version
+        run: |
+          if [[ $GITHUB_REF == refs/tags/* ]]; then
+            # 如果是tag构建，提取语义化版本号
+            VERSION=${GITHUB_REF#refs/tags/v}
+            echo "build-name=$VERSION" >> $GITHUB_OUTPUT
+            echo "build-number=${VERSION//./}" >> $GITHUB_OUTPUT
+          else
+            # 普通构建使用日期+运行号作为版本号
+            DATE=$(date +%Y%m%d)
+            echo "build-name=1.0.$DATE.$GITHUB_RUN_NUMBER" >> $GITHUB_OUTPUT
+            echo "build-number=$GITHUB_RUN_NUMBER" >> $GITHUB_OUTPUT
+          fi
 
-      - name: generate ignoreConfig.dart
-        uses: finnp/create-file-action@master
-        env:
-          FILE_NAME: lib/common/config/ignoreConfig.dart
-          FILE_DATA: class NetConfig { static const CLIENT_ID = "${{ secrets.CLIENT_ID }}"; static const CLIENT_SECRET = "${{ secrets.CLIENT_SECRET }}";}
-      
-      - name: Install dependencies
-        run: flutter pub get
-
-      - name: Create keystore
-        run: echo $ENCODED_KEYSTORE | base64 -di > android/app/keystore.jks
-        env:
-          ENCODED_KEYSTORE: ${{ secrets.ENCODED_KEYSTORE }}
-
-      - name: Build apk
-        run: flutter build apk --build-name=1.0.${{ github.run_number }} --build-number=${{ github.run_number }} --release  --no-shrink
+      # 执行构建
+      - name: Build ${{ matrix.platform }}
+        run: |
+          flutter build ${{ matrix.build-cmd }} \
+            --build-name=${{ steps.version.outputs.build-name }} \
+            --build-number=${{ steps.version.outputs.build-number }} \
+            --release \
+            --no-shrink
         env:
           KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
           KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
-          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD}}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
 
-      - name: Release
-        id: upload_release_asset
+      # 重命名 APK（确保所有引用都使用 frontline_love-*）
+      - name: Rename APK
+        run: |
+          # 创建release目录（确保存在）
+          mkdir -p build/app/outputs/apk/release
+          # 重命名文件
+          cp build/app/outputs/apk/release/app-release.apk \
+             build/app/outputs/apk/release/frontline_love-${{ steps.version.outputs.build-name }}.apk
+          # 验证文件是否存在
+          ls -la build/app/outputs/apk/release/frontline_love-*
+
+      # 验证产物签名（仅Android）
+      - name: Verify APK signature
+        if: matrix.platform == 'android'
+        run: |
+          apk_path="build/app/outputs/apk/release/frontline_love-${{ steps.version.outputs.build-name }}.apk"
+          if [ -f "$apk_path" ]; then
+            jarsigner -verify -verbose -certs "$apk_path"
+          else
+            echo "Error: APK file not found at $apk_path"
+            exit 1
+          fi
+
+      # 上传构建产物（使用通配符匹配 frontline_love-*）
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ matrix.platform }}-build
+          path: build/app/outputs/apk/release/frontline_love-*.apk
+          retention-days: 7
+
+      # 检查是否需要预发布（提交信息包含[pre-release]）
+      - name: Check for pre-release
+        id: check-pre-release
+        run: |
+          if echo "${{ github.event.head_commit.message }}" | grep -q '\[pre-release\]'; then
+            echo "is-pre-release=true" >> $GITHUB_OUTPUT
+          else
+            echo "is-pre-release=false" >> $GITHUB_OUTPUT
+          fi
+
+      # 创建预发布（当提交信息包含[pre-release]时）
+      - name: Create Pre-Release
+        if: steps.check-pre-release.outputs.is-pre-release == 'true' && !startsWith(github.ref, 'refs/tags/')
         uses: softprops/action-gh-release@v2
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
+          tag_name: "pre-release-${{ steps.version.outputs.build-name }}"
+          name: "Pre-Release v${{ steps.version.outputs.build-name }}"
+          body: "Automated pre-release build"
+          files: build/app/outputs/apk/release/frontline_love-*.apk
+          prerelease: true
+          draft: false
+          make_latest: false
+
+  release:
+    name: Create Production Release
+    needs: build
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: android-build
+          path: artifacts
+
+      # 提取语义化版本号
+      - name: Extract version tag
+        id: version
+        run: |
+          TAG=${GITHUB_REF#refs/tags/v}
+          echo "version=$TAG" >> $GITHUB_OUTPUT
+
+      # 创建正式发布（确保下载的artifact也使用新名称）
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          tag_name: v${{ steps.version.outputs.version }}
+          name: Release v${{ steps.version.outputs.version }}
+          body: |
+            Flutter Production Release
+            Version: ${{ steps.version.outputs.version }}
+            Build: ${{ github.run_number }}
+          files: artifacts/frontline_love-*.apk  # 修改为匹配新名称
+          draft: false
           prerelease: false
-          files: build/app/outputs/apk/release/app-*.apk
-          tag_name: ${{ github.ref_name }}
-          name: ${{ github.ref_name }}
           make_latest: true
