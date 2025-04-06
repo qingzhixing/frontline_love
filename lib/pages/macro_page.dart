@@ -98,8 +98,8 @@ class _MacroPageState extends State<MacroPage> {
                         ),
                       ),
                       onPressed: () {},
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 10),
+                      child: const Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 10),
                         child: Text(
                           "清空",
                           style: TextStyle(
@@ -118,8 +118,8 @@ class _MacroPageState extends State<MacroPage> {
                         ),
                       ),
                       onPressed: () {},
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 10),
+                      child: const Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 10),
                         child: Text(
                           "播放",
                           style: TextStyle(
