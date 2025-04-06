@@ -93,7 +93,6 @@ jobs:
           channel: stable
           flutter-version: ${{ env.FLUTTER_VERSION }}
 
-      # ========== 签名关键修改开始 ==========
       - name: Setup config files
         env:
           ENCODED_KEYSTORE: ${{ secrets.ENCODED_KEYSTORE }}
@@ -112,15 +111,6 @@ jobs:
       # 构建前清理
       - name: Clean Build Dir
         run: rm -rf build/app/outputs/apk/release/*
-
-      # Gradle配置验证
-      - name: Verify Gradle Config
-        run: |
-          grep "signingConfig signingConfigs.release" android/app/build.gradle || {
-            echo "❌ Missing signingConfig in build.gradle";
-            exit 1;
-          }
-      # ========== 签名关键修改结束 ==========
 
       - name: Set build version
         id: version
