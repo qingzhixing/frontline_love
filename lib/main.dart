@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:frontline_love/pages/macro_page.dart';
+import 'package:frontline_love/pages/settings_page.dart';
 import 'package:frontline_love/theme.dart';
 
 import 'pages/about_page.dart';
@@ -45,9 +47,9 @@ class _MainScreenState extends State<MainScreen> {
         },
         children: const [
           HomePage(),
-          Icon(Icons.link),
+          MacroPage(),
           AboutPage(),
-          Icon(Icons.settings),
+          SettingsPage(),
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(

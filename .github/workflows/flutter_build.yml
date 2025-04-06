@@ -60,7 +60,7 @@ jobs:
           ENCODED_KEYSTORE: ${{ secrets.ENCODED_KEYSTORE }}
 
       - name: Build apk
-        run: flutter build apk --release  --no-shrink
+        run: flutter build apk --build-name=1.0.${{ github.run_number }} --build-number=${{ github.run_number }} --release  --no-shrink
         env:
           KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
           KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
@@ -126,7 +126,7 @@ jobs:
           ENCODED_KEYSTORE: ${{ secrets.ENCODED_KEYSTORE }}
 
       - name: Build apk
-        run: flutter build apk --release  --no-shrink
+        run: flutter build apk --build-name=1.0.${{ github.run_number }} --build-number=${{ github.run_number }} --release  --no-shrink
         env:
           KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
           KEY_ALIAS: ${{ secrets.KEY_ALIAS }}

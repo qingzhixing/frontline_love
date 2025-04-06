@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../background_scaffold.dart';
 import '../theme.dart';
 import 'keyboard_grid.dart';
 
@@ -20,14 +21,9 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: const BoxDecoration(
-        image: DecorationImage(
-          image: AssetImage("assets/img/background.jpg"),
-          fit: BoxFit.cover,
-        ),
-      ),
-      child: Scaffold(
+    return BackgroundScaffold(
+      backgroundImageProvider: const AssetImage("assets/img/background.jpg"),
+      scaffold: Scaffold(
         extendBody: true, //让主体内容延伸到导航栏后面
         backgroundColor: Colors.transparent,
         appBar: AppBar(
