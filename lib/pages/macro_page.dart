@@ -11,6 +11,7 @@ class MacroPage extends StatefulWidget {
 }
 
 class _MacroPageState extends State<MacroPage> {
+  final _scrollController = ScrollController();
   @override
   Widget build(BuildContext context) {
     return BackgroundScaffold(
@@ -51,6 +52,88 @@ class _MacroPageState extends State<MacroPage> {
                   letterSpacing: 5,
                 ),
               ),
+            ),
+          ),
+        ),
+        body: Container(
+          margin: const EdgeInsets.all(20),
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                TextField(
+                  maxLines: 15, // null 表示不限制行数，根据内容自动扩展
+                  scrollPhysics:
+                      const AlwaysScrollableScrollPhysics(), // 始终启用滚动
+                  scrollController: _scrollController,
+                  keyboardType: TextInputType.multiline, // 设置键盘类型为多行
+                  decoration: InputDecoration(
+                    filled: true,
+                    fillColor: Colors.white.withAlpha(200),
+                    border: const OutlineInputBorder(),
+                    hintText: '在此处粘贴宏内容',
+                    hintStyle: const TextStyle(
+                      fontFamily: customFont,
+                      letterSpacing: 2,
+                    ),
+                  ),
+                  onChanged: (text) {
+                    // 自动滚动到最后一行
+                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                      _scrollController
+                          .jumpTo(_scrollController.position.maxScrollExtent);
+                    });
+                  },
+                ),
+                const Padding(padding: EdgeInsets.symmetric(vertical: 10)),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    TextButton(
+                      style: ButtonStyle(
+                        backgroundColor: WidgetStatePropertyAll(
+                          Colors.white.withAlpha(200),
+                        ),
+                      ),
+                      onPressed: () {},
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 10),
+                        child: Text(
+                          "清空",
+                          style: TextStyle(
+                            color: Colors.blueAccent,
+                            fontFamily: customFont,
+                            fontWeight: FontWeight.normal,
+                            fontSize: 16,
+                          ),
+                        ),
+                      ),
+                    ),
+                    TextButton(
+                      style: ButtonStyle(
+                        backgroundColor: WidgetStatePropertyAll(
+                          Colors.white.withAlpha(200),
+                        ),
+                      ),
+                      onPressed: () {},
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 10),
+                        child: Text(
+                          "播放",
+                          style: TextStyle(
+                            color: Colors.blueAccent,
+                            fontFamily: customFont,
+                            fontWeight: FontWeight.normal,
+                            fontSize: 16,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
             ),
           ),
         ),
