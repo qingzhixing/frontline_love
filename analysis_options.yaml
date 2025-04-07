@@ -19,7 +19,6 @@ analyzer:
     prefer_const_constructors: ignore   # 推荐const构造函数
     prefer_const_declarations: ignore   # 推荐const声明
     avoid_print: ignore                # 避免使用print
-    avoid_single_child_in_flex: ignore  # Flex中的单个子元素
     prefer_final_fields: ignore         # 推荐final字段
     
     # 样式相关
