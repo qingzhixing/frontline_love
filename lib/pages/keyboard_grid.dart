@@ -1,8 +1,9 @@
-import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'dart:developer' as developer;
 
 import 'package:frontline_love/widgets/blury_button.dart';
+
+import '../ephemeral_audio_player.dart';
 
 class KeyboardGrid extends StatefulWidget {
   const KeyboardGrid({super.key});
@@ -17,10 +18,8 @@ class _KeyboardGridState extends State<KeyboardGrid> {
       developer.log("Invalid sound effect index $soundEffectIndex");
       return;
     }
-    var tempPlayer = AudioPlayer();
-    await tempPlayer.play(AssetSource(
-      "audio/se$soundEffectIndex.mp3",
-    ));
+    await EphemeralAudioPlayer.playAndDispose(
+        assetPath: "audio/se$soundEffectIndex.mp3");
   }
 
   @override
