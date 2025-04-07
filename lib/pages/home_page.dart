@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '../background_scaffold.dart';
+import '../widgets/background_scaffold.dart';
 import '../theme.dart';
+import '../widgets/customAppBar.dart';
 import 'keyboard_grid.dart';
 
 class HomePage extends StatefulWidget {
@@ -27,33 +28,10 @@ class _HomePageState extends State<HomePage> {
       scaffold: Scaffold(
         extendBody: true, //让主体内容延伸到导航栏后面
         backgroundColor: Colors.transparent,
-        appBar: AppBar(
-          backgroundColor: Colors.transparent,
-          centerTitle: true,
-          title: Container(
-            padding: const EdgeInsets.symmetric(vertical: 3),
-            margin: const EdgeInsets.only(top: 3),
-            decoration: BoxDecoration(
-              borderRadius: const BorderRadius.all(Radius.circular(10)),
-              color: Colors.purple.withOpacity(.5),
-              border: Border.all(
-                color: Colors.white.withOpacity(0.2),
-                width: 2,
-              ),
-            ),
-            child: const Center(
-              child: Text(
-                "我爱玩纷争前线",
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 24,
-                  fontWeight: FontWeight.normal,
-                  fontFamily: customFont,
-                  letterSpacing: 5,
-                ),
-              ),
-            ),
-          ),
+        appBar: CustomAppBar(
+          text: "我爱玩纷争前线",
+          containerColor: Colors.purple.withAlpha(127),
+          textColor: Colors.white,
         ),
         body: const Center(
           child: KeyboardGrid(),

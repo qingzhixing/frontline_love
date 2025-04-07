@@ -2,7 +2,7 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'dart:developer' as developer;
 
-import 'package:frontline_love/blury_button.dart';
+import 'package:frontline_love/widgets/blury_button.dart';
 
 class KeyboardGrid extends StatefulWidget {
   const KeyboardGrid({super.key});
