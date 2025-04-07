@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../widgets/background_scaffold.dart';
 import '../theme.dart';
-import '../widgets/customAppBar.dart';
+import '../widgets/custom_app_bar.dart';
 import 'keyboard_grid.dart';
 
 class HomePage extends StatefulWidget {
