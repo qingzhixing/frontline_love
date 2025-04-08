@@ -36,7 +36,7 @@ class MacroParser {
         if (waitTime != null) {
           await _cancelableDelay(waitTime);
         } else {
-          await _cancelableDelay(0.1); // 默认指令间隔
+          await _cancelableDelay(0.01); // 默认指令间隔
         }
       }
     } finally {
@@ -58,6 +58,12 @@ class MacroParser {
     final angleWaitMatch = RegExp(r'<wait\.(\d+(\.\d+)?)>').firstMatch(line);
     if (angleWaitMatch != null) {
       return double.parse(angleWaitMatch.group(1)!);
+    }
+
+    // 格式3: <等待.1.5>
+    final angleWaitMatch_cn = RegExp(r'<等待\.(\d+(\.\d+)?)>').firstMatch(line);
+    if (angleWaitMatch_cn != null) {
+      return double.parse(angleWaitMatch_cn.group(1)!);
     }
 
     return null;

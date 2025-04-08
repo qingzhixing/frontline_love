@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:highlight/highlight.dart';
 
 class FF14CommandEditor extends StatefulWidget {
-  static Mode ff14Language = Mode(
+  static final Mode ff14Language = Mode(
     case_insensitive: false,
     keywords: {
       'chat': ['/s', '/p', '/fc', '/l', '/y', '/sh', '/tell'],
@@ -27,49 +27,45 @@ class FF14CommandEditor extends StatefulWidget {
         '<se.14>',
         '<se.15>',
         '<se.16>'
-      ]
+      ],
     },
     contains: [
       Mode(className: 'sound', begin: '<se\\.[1-9][0-6]?>', end: '>'),
-      Mode(
-          className: 'comment',
-          begin: '#',
-          end: '\n',
-          contains: [Mode(className: 'doctag', begin: '#')]),
+      Mode(className: 'comment', begin: '#', end: '\n'),
       Mode(className: 'string', begin: '"', end: '"'),
-      Mode(className: 'variable', begin: '\\b[0-9]{1,3}\\b' // 匹配数字参数(如等待时间)
-          ),
-      Mode(className: 'meta', begin: '/[a-zA-Z]+' // 匹配所有指令
-          )
+      Mode(className: 'variable', begin: '\\b[0-9]{1,3}\\b'),
+      Mode(className: 'meta', begin: '/[a-zA-Z]+'),
     ],
   );
   late final CodeController codeController;
 
-  FF14CommandEditor({Key? key}) : super(key: key) {
-    codeController = CodeController(
-      language: ff14Language,
-      patternMap: {
-        r'<se\.([1-9]|1[0-6])>': TextStyle(
-          color: Colors.greenAccent,
-          fontWeight: FontWeight.bold,
-        ),
-        r'#.*$': TextStyle(color: Colors.grey), // 注释高亮
-        r'"/p"': TextStyle(color: Colors.blue), // 聊天命令
-        r'<wait\.(\d+(\.\d+)?)>':
-            TextStyle(color: Colors.amberAccent), // 等待时间高亮
-        r'/wait (\d+(\.\d+)?)': TextStyle(color: Colors.amberAccent), // 等待时间高亮
-
-        r'"/ac"': TextStyle(color: Colors.cyanAccent), // 宏指令高亮
-        r'"/action"': TextStyle(color: Colors.deepOrange), // 宏指令高亮
-      },
-    );
-  }
+  FF14CommandEditor({Key? key}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => _FF14CommandEditorState();
 }
 
 class _FF14CommandEditorState extends State<FF14CommandEditor> {
+  @override
+  void initState() {
+    super.initState();
+    widget.codeController = CodeController(
+      language: FF14CommandEditor.ff14Language,
+      patternMap: {
+        r'<se\.[1-9][0-6]?>': const TextStyle(
+            color: Colors.greenAccent, fontWeight: FontWeight.bold),
+        r'#.*': const TextStyle(color: Colors.grey), // 注释
+        r'"/p"': const TextStyle(color: Colors.blue), // 队伍聊天
+        r'"/ac"': const TextStyle(color: Colors.cyan), // 技能指令
+        r'"/action"': const TextStyle(color: Colors.orange), // 技能指令别名
+        r'/wait\s+\d+': const TextStyle(color: Colors.amber), // 等待时间
+        r'<wait\.(\d+(\.\d+)?)>':
+            const TextStyle(color: Colors.amber), // 等待时间别名,
+        r'<等待\.(\d+(\.\d+)?)>': const TextStyle(color: Colors.amber), // 等待时间别名,
+      },
+    );
+  }
+
   void _showHelpDialog(BuildContext context) {
     showDialog(
       context: context,
@@ -124,7 +120,7 @@ class _FF14CommandEditorState extends State<FF14CommandEditor> {
         fontSize: 18,
         letterSpacing: 1,
       ),
-      maxLines: 15, // null 表示不限制行数，根据内容自动扩展
+      maxLines: 5, // null 表示不限制行数，根据内容自动扩展
       keyboardType: TextInputType.multiline, // 设置键盘类型为多行
       horizontalScroll: true,
     );
