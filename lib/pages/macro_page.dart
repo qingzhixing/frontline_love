@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:frontline_love/macro_parser.dart';
+import 'package:frontline_love/pages/ff14_command_editor.dart';
 import 'package:frontline_love/widgets/background_scaffold.dart';
-import 'package:code_text_field/code_text_field.dart';
-
-import 'dart:developer' as developer;
 
 import '../theme.dart';
 import '../widgets/custom_app_bar.dart';
-
-var ff14LanguageController = CodeController(stringMap: {});
 
 const textButtonTextStyle = TextStyle(
   color: Colors.blueAccent,
@@ -59,8 +56,7 @@ class MacroPage extends StatefulWidget {
 
 class _MacroPageState extends State<MacroPage>
     with AutomaticKeepAliveClientMixin {
-  final _scrollController = ScrollController();
-  final _textFieldController = TextEditingController();
+  final ff14CommandEditor = FF14CommandEditor();
   @override
   Widget build(BuildContext context) {
     super.build(context); // 必须调用
@@ -80,51 +76,28 @@ class _MacroPageState extends State<MacroPage>
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                TextField(
-                  controller: _textFieldController,
-                  style: const TextStyle(
-                    fontFamily: customFont,
-                    fontSize: 18,
-                    letterSpacing: 1,
-                  ),
-
-                  maxLines: 15, // null 表示不限制行数，根据内容自动扩展
-                  scrollPhysics:
-                      const AlwaysScrollableScrollPhysics(), // 始终启用滚动
-                  scrollController: _scrollController,
-                  keyboardType: TextInputType.multiline, // 设置键盘类型为多行
-                  decoration: InputDecoration(
-                    filled: true,
-                    fillColor: Colors.white.withAlpha(200),
-                    border: const OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(10))),
-                    hintText: "在此处粘贴宏内容",
-                    hintStyle: const TextStyle(
-                      fontFamily: customFont,
-                      fontSize: 18,
-                      letterSpacing: 2,
-                    ),
-                  ),
-                  onChanged: (text) {
-                    // 自动滚动到最后一行
-                    WidgetsBinding.instance.addPostFrameCallback((_) {
-                      _scrollController
-                          .jumpTo(_scrollController.position.maxScrollExtent);
-                    });
-                  },
-                ),
+                ff14CommandEditor,
                 const Padding(padding: EdgeInsets.symmetric(vertical: 10)),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     MacroOutlinedButton(
-                      buttonChild: const Text(
+                      buttonChild: Text(
+                        "帮助",
+                        style: textButtonTextStyle,
+                      ),
+                      onPressed: () {
+                        _showHelpDialog(context);
+                      },
+                    ),
+                    MacroOutlinedButton(
+                      buttonChild: Text(
                         "清空",
                         style: textButtonTextStyle,
                       ),
                       onPressed: () {
-                        _textFieldController.text = "";
+                        ff14CommandEditor.codeController.text = "";
                         setState(() {});
                       },
                     ),
@@ -134,7 +107,8 @@ class _MacroPageState extends State<MacroPage>
                         style: textButtonTextStyle,
                       ),
                       onPressed: () {
-                        developer.log(_textFieldController.text);
+                        MacroParser.parse(
+                            ff14CommandEditor.codeController.text);
                       },
                     ),
                   ],
@@ -143,6 +117,43 @@ class _MacroPageState extends State<MacroPage>
             ),
           ),
         ),
+      ),
+    );
+  }
+
+  void _showHelpDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('宏指令帮助'),
+        content: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('支持指令:', style: TextStyle(fontWeight: FontWeight.bold)),
+              SizedBox(height: 8),
+              Text('• /wait [秒数] - 等待指定时间'),
+              Text('• <se.1>到<se.16> - 播放音效'),
+              Text('• /p [消息] - 队伍聊天'),
+              Text('• /ac "[技能名]" <目标> - 使用技能'),
+              SizedBox(height: 16),
+              Text('示例宏:', style: TextStyle(fontWeight: FontWeight.bold)),
+              SizedBox(height: 8),
+              Text('/p 开始攻击！<se.6>\n'
+                  '/ac "连击" <t>\n'
+                  '/wait 1\n'
+                  '/ac "正拳" <t>\n'
+                  '/wait 1\n'
+                  '/ac "崩拳" <t>'),
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text('关闭'),
+          ),
+        ],
       ),
     );
   }

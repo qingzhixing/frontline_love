@@ -42,7 +42,7 @@ class _BlurButtonState extends State<BlurButton> {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(widget.boarderRadius ?? 0),
           border: Border.all(
-            color: Colors.white.withOpacity(0.2),
+            color: Colors.white.withAlpha(60),
             width: 1,
           ),
         ),

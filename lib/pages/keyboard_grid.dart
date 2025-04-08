@@ -38,7 +38,7 @@ class _KeyboardGridState extends State<KeyboardGrid> {
         return BlurButton(
           boarderRadius: 20,
           blurSigma: 3,
-          buttonColor: Colors.white.withOpacity(.2),
+          buttonColor: Colors.white.withAlpha(60),
           onPressed: () => playSound(index + 1),
           child: Text(
             "se.${index + 1}",

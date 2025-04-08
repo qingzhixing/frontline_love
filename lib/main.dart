@@ -3,10 +3,13 @@ import 'package:frontline_love/pages/macro_page.dart';
 import 'package:frontline_love/pages/settings_page.dart';
 import 'package:frontline_love/theme.dart';
 
+import 'ephemeral_audio_player.dart';
 import 'pages/about_page.dart';
 import 'pages/home_page.dart';
 
-void main() {
+void main() async {
+  // 预加载所有音效
+  await EphemeralAudioPlayer.preloadSounds();
   runApp(const FrontlineLoveApp());
 }
 
