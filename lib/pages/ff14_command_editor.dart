@@ -120,7 +120,7 @@ class _FF14CommandEditorState extends State<FF14CommandEditor> {
         fontSize: 18,
         letterSpacing: 1,
       ),
-      maxLines: 5, // null 表示不限制行数，根据内容自动扩展
+      maxLines: 17, // null 表示不限制行数，根据内容自动扩展
       keyboardType: TextInputType.multiline, // 设置键盘类型为多行
       horizontalScroll: true,
     );
