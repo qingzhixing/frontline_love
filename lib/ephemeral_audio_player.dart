@@ -53,7 +53,7 @@ class EphemeralAudioPlayer {
 
       // 开始播放
       await player.setVolume(volume);
-      await player.play(AssetSource(assetPath));
+      await player.play(source);
     } catch (e) {
       await player.dispose(); // 发生错误时立即释放
       debugPrint('播放失败: $e');
